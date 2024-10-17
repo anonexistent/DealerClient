@@ -13,16 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DealerClient.View
+namespace DealerClient.View;
+
+public partial class DealerTypePage : Page
 {
-    /// <summary>
-    /// Логика взаимодействия для DealerTypePage.xaml
-    /// </summary>
-    public partial class DealerTypePage : Page
+    public DealerTypePage()
     {
-        public DealerTypePage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

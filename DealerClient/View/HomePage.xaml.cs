@@ -13,16 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DealerClient.View
+namespace DealerClient.View;
+
+
+public partial class HomePage : Page
 {
-    /// <summary>
-    /// Логика взаимодействия для HomePage.xaml
-    /// </summary>
-    public partial class HomePage : Page
+    public HomePage()
     {
-        public HomePage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DealerClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="555" Width="805">
-    <Grid>
+        Title="DealerClient" Height="555" Width="805" MinHeight="200" MinWidth="250">
+    <Frame x:Name="mainFrmae" Margin="10" Background="AliceBlue" NavigationUIVisibility="Hidden">
         
-    </Grid>
+    </Frame>
 </Window>
