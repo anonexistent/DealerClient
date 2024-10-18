@@ -1,8 +1,12 @@
-﻿using DealerClient.View;
+﻿using DealerAPI.Contracts.Input;
+using DealerAPI.Model;
+using DealerClient.View;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -12,81 +16,50 @@ namespace DealerClient.ViewModel;
 
 public class MainViewModel : INotifyPropertyChanged
 {
+    private HttpClient _httpClient;
+
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-    private IMainWindowsCodeBehind _mainCodeBehind;
-
-    private readonly Stack<Page> _navigationStack = new Stack<Page>();
-    public ICommand GoToDealerPageCommand { get; }
-    public ICommand GoToDealerTypePageCommand { get; }
-    public ICommand GoBackCommand { get; }
-
-    public MainViewModel(IMainWindowsCodeBehind codeBehind)
+	private List<Dealer> dealers;
+	public List<Dealer> Dealers
     {
-        GoToDealerPageCommand = new RelayCommand(GoToDealerPage);
-        GoToDealerTypePageCommand = new RelayCommand(GoToDealerTypePage);
-        GoBackCommand = new RelayCommand(GoBack, CanGoBack);
+		get { return GetDealers().Result; }
+		set { dealers = value; }
+	}
 
-        if (codeBehind == null) throw new ArgumentNullException(nameof(codeBehind));
+	private List<DealerType> dealerTypes;
+	public List<DealerType> DealerTypes
+    {
+		get { return GetDealerTypes().Result; }
+		set { dealerTypes = value; }
+	}
 
-        _mainCodeBehind = codeBehind;
+	private async Task<List<Dealer>> GetDealers()
+    {
+        var response = _httpClient.GetStringAsync("https://localhost:7136/dealer/dealer/getList").Result;
+        var dealers = JsonConvert.DeserializeObject<Dictionary<string,List<Dealer>>>(response);
+        return dealers["dealers"];
     }
 
-    private RelayCommand _showMessageCommand;
-    public RelayCommand ShowMessageCommand
+	private async Task<List<DealerType>> GetDealerTypes()
     {
-        get
-        {
-            return _showMessageCommand = _showMessageCommand ??
-                new RelayCommand(OnShowMessage, CanShowMessage);
-        }
-    }
-    private bool CanShowMessage(object parameter)
-    {
-        return true;
-    }
-    private void OnShowMessage(object parameter)
-    {
-        _mainCodeBehind.ShowMessage("Привет от MainUC");
+        var response = _httpClient.GetStringAsync("https://localhost:7136/dealer/dealerType/getList").Result;
+        var dealers = JsonConvert.DeserializeObject<Dictionary<string,List<DealerType>>>(response);
+        return dealers["dealerTypes"];
     }
 
-    private void GoToDealerPage(object parameter)
+    public async Task<bool> CreateDealerAsync(CreateDealerBody dealerBody)
     {
-        // Сохраняем текущую страницу перед переходом
-        if (App.Current.MainWindow.Content is Page currentPage)
-        {
-            _navigationStack.Push(currentPage);
-            // Уведомляем о изменении доступности команды "Назад"
-            ((RelayCommand)GoBackCommand).RaiseCanExecuteChanged();
-        }
-        App.Current.MainWindow.Content = new DealerPage();
+        var jsonContent = JsonConvert.SerializeObject(dealerBody);
+        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.PostAsync("https://localhost:7136/dealer/dealer/create", content);
+        return response.IsSuccessStatusCode;
     }
 
-    private void GoToDealerTypePage(object parameter)
+    public MainViewModel()
     {
-        // Сохраняем текущую страницу перед переходом
-        if (App.Current.MainWindow.Content is Page currentPage)
-        {
-            _navigationStack.Push(currentPage);
-            // Уведомляем о изменении доступности команды "Назад"
-            ((RelayCommand)GoBackCommand).RaiseCanExecuteChanged();
-        }
-        App.Current.MainWindow.Content = new DealerTypePage();
-    }
+        _httpClient = new HttpClient();
 
-    private void GoBack(object parameter)
-    {
-        if (_navigationStack.Count > 0)
-        {
-            var previousPage = _navigationStack.Pop(); // Получаем предыдущую страницу
-            App.Current.MainWindow.Content = previousPage; // Переход на предыдущую страницу
-            // Уведомляем о изменении доступности команды "Назад"
-            ((RelayCommand)GoBackCommand).RaiseCanExecuteChanged();
-        }
-    }
-
-    public bool CanGoBack(object parameter)
-    {
-        return _navigationStack.Count > 0; // Проверяем, есть ли страницы для возврата
     }
 }

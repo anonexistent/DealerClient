@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DealerClient.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,12 +14,33 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DealerClient.View;
-
-public partial class DealerPage : Page
+namespace DealerClient.View
 {
-    public DealerPage()
+    /// <summary>
+    /// Логика взаимодействия для DealerPage.xaml
+    /// </summary>
+    public partial class DealerPage : Page
     {
-        InitializeComponent();
+        public DealerPage()
+        {
+            InitializeComponent();
+
+            dgMain.ItemsSource = new MainViewModel().Dealers;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                HomePage.RootFrame.GoBack();
+
+            }
+            catch { }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            HomePage.RootFrame.Navigate(new CreateDealerPage());
+        }
     }
 }

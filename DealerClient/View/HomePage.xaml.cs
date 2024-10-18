@@ -18,8 +18,23 @@ namespace DealerClient.View;
 
 public partial class HomePage : Page
 {
+    public static Frame RootFrame { get; set; }
+
     public HomePage()
     {
         InitializeComponent();
+
+        RootFrame = homeFrame;
+        homeFrame.Navigate(new DealerTypePage());
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        homeFrame.Navigate(new DealerPage());
+    }
+
+    private void Button_Click_1(object sender, RoutedEventArgs e)
+    {
+        homeFrame.Navigate(new DealerTypePage());
     }
 }
