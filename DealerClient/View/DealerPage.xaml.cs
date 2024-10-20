@@ -65,5 +65,17 @@ namespace DealerClient.View
 
             MessageBox.Show(result.ToString());
         }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            var selectedDealer = ((Dealer)dgMain.SelectedItem);
+
+            if (selectedDealer is null)
+            {
+                MessageBox.Show("Необходимо выбрать объект из списка");
+                throw new NullReferenceException("Необходимо выбрать объект из списка");
+            }
+            HomePage.RootFrame.Navigate(new CreateDealerPage(selectedDealer));
+        }
     }
 }

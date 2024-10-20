@@ -25,7 +25,7 @@
 
         <StackPanel Grid.Row="1" Grid.RowSpan="2" VerticalAlignment="Center">
             <Button Content="add" FontSize="14" Click="Button_Click_2"/>
-            <Button Content="change" Margin="0 10" FontSize="14"/>
+            <Button Content="change" IsEnabled="False" Margin="0 10" FontSize="14"/>
             <Button Content="remove" FontSize="14" Click="Button_Click_3"/>
         </StackPanel>
         

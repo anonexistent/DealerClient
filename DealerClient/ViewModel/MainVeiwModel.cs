@@ -150,6 +150,29 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    public async Task<bool> ChangeDealerAsync(string dealerBody, CreateDealerBody body)
+    {
+        try
+        {
+            var jsonContent = JsonConvert.SerializeObject(body);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response;
+
+            using (_httpClient = new())
+            {
+                response = await _httpClient.PostAsync("https://localhost:7136/dealer/dealer/change"+ "?Id="+dealerBody, content);
+            }
+
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+            throw;
+        }
+    }
+
     public MainViewModel()
     {
         _httpClient = new HttpClient();
