@@ -1,4 +1,6 @@
-﻿using DealerClient.ViewModel;
+﻿using DealerAPI.Contracts.Input;
+using DealerAPI.Model;
+using DealerClient.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +43,27 @@ namespace DealerClient.View
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             HomePage.RootFrame.Navigate(new CreateDealerPage());
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            dgMain.ItemsSource = new MainViewModel().Dealers;
+        }
+
+        private async void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            var selectedType = ((Dealer)dgMain.SelectedItem);
+
+            if(selectedType is null)
+            {
+                MessageBox.Show("Необходимо выбрать объект из списка");
+                throw new NullReferenceException("Необходимо выбрать объект из списка");
+            }
+
+            var m = new MainViewModel();
+            var result = await m.RemoveDealerAsync(new DealerIdQuery() { Id = selectedType.Id.ToString() });
+
+            MessageBox.Show(result.ToString());
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -43,18 +44,110 @@ public class MainViewModel : INotifyPropertyChanged
 
 	private async Task<List<DealerType>> GetDealerTypes()
     {
-        var response = _httpClient.GetStringAsync("https://localhost:7136/dealer/dealerType/getList").Result;
-        var dealers = JsonConvert.DeserializeObject<Dictionary<string,List<DealerType>>>(response);
-        return dealers["dealerTypes"];
+        try
+        {
+            var response = _httpClient.GetStringAsync("https://localhost:7136/dealer/dealerType/getList").Result;
+            var dealers = JsonConvert.DeserializeObject<Dictionary<string,List<DealerType>>>(response);
+            return dealers["dealerTypes"];
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+            throw;
+        }
+
     }
 
     public async Task<bool> CreateDealerAsync(CreateDealerBody dealerBody)
     {
-        var jsonContent = JsonConvert.SerializeObject(dealerBody);
-        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+        try
+        {
+            var jsonContent = JsonConvert.SerializeObject(dealerBody);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        var response = await _httpClient.PostAsync("https://localhost:7136/dealer/dealer/create", content);
-        return response.IsSuccessStatusCode;
+            HttpResponseMessage response;
+
+            using (_httpClient = new())
+            {
+                response = await _httpClient.PostAsync("https://localhost:7136/dealer/dealer/create", content);
+            }
+
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+            throw;
+        }
+    }
+    
+    public async Task<bool> CreateDealerTypeAsync(CreateDealerTypeBody dealerBody)
+    {
+        try
+        {
+            var jsonContent = JsonConvert.SerializeObject(dealerBody);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response;
+
+            using (_httpClient = new())
+            {
+                response = await _httpClient.PostAsync("https://localhost:7136/dealer/dealerType/create", content);
+            }
+
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<bool> RemoveDealerTypeAsync(DealerTypeIdQuery dealerBody)
+    {
+        try
+        {
+            var jsonContent = JsonConvert.SerializeObject(dealerBody);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response;
+
+            using (_httpClient = new())
+            {
+                response = await _httpClient.DeleteAsync("https://localhost:7136/dealer/dealerType/remove"+ "?DealerTypeId="+dealerBody.DealerTypeId);
+            }
+
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<bool> RemoveDealerAsync(DealerIdQuery dealerBody)
+    {
+        try
+        {
+            var jsonContent = JsonConvert.SerializeObject(dealerBody);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response;
+
+            using (_httpClient = new())
+            {
+                response = await _httpClient.DeleteAsync("https://localhost:7136/dealer/dealer/remove"+ "?Id="+dealerBody.Id);
+            }
+
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+            throw;
+        }
     }
 
     public MainViewModel()

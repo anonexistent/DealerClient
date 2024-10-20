@@ -30,11 +30,11 @@ public partial class HomePage : Page
 
     private void Button_Click(object sender, RoutedEventArgs e)
     {
-        homeFrame.Navigate(new DealerPage());
+        RootFrame.Navigate(new DealerPage());
     }
 
     private void Button_Click_1(object sender, RoutedEventArgs e)
     {
-        homeFrame.Navigate(new DealerTypePage());
+        RootFrame.Navigate(new DealerTypePage());
     }
 }

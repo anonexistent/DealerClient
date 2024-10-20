@@ -13,44 +13,36 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace DealerClient.View
 {
     /// <summary>
-    /// Логика взаимодействия для CreateDealerPage.xaml
+    /// Логика взаимодействия для CreateDealerTypePage.xaml
     /// </summary>
-    public partial class CreateDealerPage : Page
+    public partial class CreateDealerTypePage : Page
     {
-        public CreateDealerPage()
+        public CreateDealerTypePage()
         {
             InitializeComponent();
-
-            var temp = new MainViewModel().DealerTypes;
-            cbType.ItemsSource = temp;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.MainFrame.GoBack();
         }
 
         private async void btnCreateDealer_Click(object sender, RoutedEventArgs e)
         {
-            var createBode = new CreateDealerBody()
+            var createBode = new CreateDealerTypeBody()
             {
                 Name = tbName.Text,
-                Description = tbDescription.Text,
-                TypeId = ((DealerType)cbType.SelectedItem).Id.ToString(),
-            }; 
+            };
             var m = new MainViewModel();
-            var isOk = await m.CreateDealerAsync(createBode);
+            var isOk = await m.CreateDealerTypeAsync(createBode);
             MessageBox.Show(isOk.ToString());
 
             tbName.Text = "";
-            tbDescription.Text = "";
-            cbType.SelectedItem = null;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.MainFrame.Navigate(new HomePage());
         }
     }
 }
